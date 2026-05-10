@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAP Easy Access – Hemanth Kumar S</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── SAP GUI EXACT COLOR TOKENS ─── */
+:root {
+  --sap-win-bg:       #d4d0c8;   /* classic Windows XP / SAP background */
+  --sap-title-from:   #0a246a;
+  --sap-title-to:     #a6caf0;
+  --sap-menu-bg:      #ece9d8;
+  --sap-menu-border:  #aca899;
+  --sap-toolbar-bg:   #f0ece0;
+  --sap-toolbar-sep:  #aca899;
+  --sap-blue:         #003399;
+  --sap-blue-light:   #336699;
+  --sap-header-blue:  #00508c;   /* SAP GUI header strip */
+  --sap-header-text:  #ffffff;
+  --sap-body-bg:      #f5f5f5;
+  --sap-field-bg:     #ffffff;
+  --sap-field-border: #aca899;
+  --sap-input-focus:  #b4d3ef;
+  --sap-tab-active:   #ffffff;
+  --sap-tab-inactive: #dbd7c8;
+  --sap-tab-border:   #aca899;
+  --sap-row-alt:      #eaf1f8;
+  --sap-row-sel:      #bad0e8;
+  --sap-row-hover:    #d4e6f6;
+  --sap-btn-from:     #f5f3eb;
+  --sap-btn-to:       #d8d4c4;
+  --sap-btn-border:   #888880;
+  --sap-btn-text:     #000000;
+  --sap-status-bg:    #d4d0c8;
+  --sap-status-text:  #003399;
+  --sap-green:        #007700;
+  --sap-red:          #cc0000;
+  --sap-label:        #003399;
+  --sap-key:          #666655;
+  --sap-text:         #000000;
+  --sap-muted:        #555555;
+  --sap-group-bg:     #e8e4d4;
+  --sap-group-border: #aca899;
+  --font: 'Noto Sans', 'SAP-icons', Tahoma, Arial, sans-serif;
+  --font-mono: 'Courier New', Courier, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--sap-win-bg); font-family: var(--font); font-size: 12px; color: var(--sap-text); overflow: hidden; }
+
+/* ─── OUTER WINDOW CHROME ─── */
+.sap-window {
+  display: flex; flex-direction: column;
+  width: 100vw; height: 100vh;
+  border: 2px solid #888;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #555;
+  background: var(--sap-win-bg);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* ─── TITLE BAR ─── */
+.title-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 22px; padding: 0 4px 0 6px;
+  background: linear-gradient(90deg, var(--sap-title-from), var(--sap-title-to));
+  flex-shrink: 0; user-select: none;
+}
+.title-bar-text {
+  font-weight: bold; font-size: 11px; color: #fff;
+  letter-spacing: 0.02em; display: flex; align-items: center; gap: 6px;
+}
+.title-icon { font-size: 13px; }
+.title-btns { display: flex; gap: 2px; }
+.title-btn {
+  width: 16px; height: 14px; font-size: 10px; line-height: 1;
+  border: 1px solid #888; border-radius: 2px;
+  background: linear-gradient(to bottom, #f0ece0, #d4d0c8);
+  display: flex; align-items: center; justify-content: center;
+  cursor: default; color: #000; font-weight: bold;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.8), inset -1px -1px 0 rgba(0,0,0,0.15);
+}
+.title-btn:hover { background: linear-gradient(to bottom, #d4d0c8, #b8b4a8); }
+
+/* ─── MENU BAR ─── */
+.menu-bar {
+  display: flex; align-items: center;
+  height: 20px; background: var(--sap-menu-bg);
+  border-bottom: 1px solid var(--sap-menu-border);
+  padding: 0 4px; flex-shrink: 0;
+}
+.menu-item {
+  padding: 2px 8px; cursor: default; font-size: 11px;
+  border: 1px solid transparent; border-radius: 2px;
+  transition: background 0.1s;
+}
+.menu-item:hover { background: var(--sap-row-hover); border-color: var(--sap-tab-border); }
+
+/* ─── TOOLBAR ─── */
+.toolbar {
+  display: flex; align-items: center; gap: 2px;
+  height: 28px; background: var(--sap-toolbar-bg);
+  border-bottom: 1px solid var(--sap-toolbar-sep);
+  padding: 2px 4px; flex-shrink: 0;
+}
+.tb-btn {
+  height: 22px; min-width: 22px; padding: 0 4px;
+  border: 1px solid transparent; border-radius: 2px;
+  background: transparent; cursor: default;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: #000;
+  transition: all 0.1s;
+}
+.tb-btn:hover {
+  border-color: var(--sap-btn-border);
+  background: linear-gradient(to bottom, #fff, #d8d4c4);
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.9), inset -1px -1px 0 rgba(0,0,0,0.1);
+}
+.tb-btn:active { background: linear-gradient(to bottom, #d8d4c4, #c8c4b4); }
+.tb-sep { width: 1px; height: 18px; background: var(--sap-toolbar-sep); margin: 0 3px; flex-shrink: 0; }
+
+/* TCODE BOX */
+.tcode-wrap {
+  display: flex; align-items: center; gap: 4px;
+  margin-left: auto;
+}
+.tcode-label { font-size: 11px; color: var(--sap-label); white-space: nowrap; }
+.tcode-field {
+  width: 90px; height: 18px;
+  border: 1px solid var(--sap-field-border);
+  background: var(--sap-field-bg);
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 0 3px; color: var(--sap-blue);
+  outline: none; cursor: default;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+}
+.tcode-field:focus { background: var(--sap-input-focus); }
+
+/* ─── HEADER STRIP (SAP blue bar) ─── */
+.sap-header {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 38px; background: var(--sap-header-blue);
+  padding: 0 12px; flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+.sap-header-title {
+  font-size: 14px; font-weight: bold; color: var(--sap-header-text);
+  letter-spacing: 0.02em;
+}
+.sap-header-right {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 11px; color: rgba(255,255,255,0.75);
+}
+.sap-header-badge {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+  padding: 2px 8px; border-radius: 2px; color: #fff; font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* ─── THEME TOGGLE (GUI vs FIORI) ─── */
+.theme-switch-wrapper {
+  display: flex; align-items: center; margin-left: 10px;
+}
+.theme-switch {
+  position: relative; display: inline-block; width: 60px; height: 22px;
+}
+.theme-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.4);
+  transition: .4s; border-radius: 22px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+}
+.slider:before {
+  position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 2px;
+  background-color: white; transition: .4s; border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.theme-switch input:checked + .slider {
+  background-color: #0a6ed1; border-color: transparent;
+}
+.theme-switch input:checked + .slider:before {
+  transform: translateX(36px);
+}
+.slider-text {
+  position: absolute; width: 100%; height: 100%; display: flex;
+  justify-content: space-between; align-items: center; padding: 0 6px;
+  font-size: 8px; font-weight: bold; color: white;
+  z-index: 1; pointer-events: none; user-select: none;
+}
+
+/* ─── MAIN AREA ─── */
+.sap-main {
+  display: flex; flex: 1; overflow: hidden;
+}
+
+/* ─── LEFT NAV TREE ─── */
+.nav-tree {
+  width: 220px; flex-shrink: 0;
+  background: #f0ece0;
+  border-right: 1px solid var(--sap-menu-border);
+  overflow-y: auto; overflow-x: hidden;
+  transition: background 0.3s ease;
+}
+.tree-header {
+  background: var(--sap-header-blue); color: #fff;
+  font-size: 11px; font-weight: bold;
+  padding: 4px 8px; letter-spacing: 0.03em;
+}
+.tree-item {
+  display: flex; align-items: center; gap: 5px;
+  padding: 3px 8px 3px 12px;
+  font-size: 11px; cursor: pointer;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  transition: background 0.1s; user-select: none;
+  color: var(--sap-text); white-space: nowrap; overflow: hidden;
+}
+.tree-item:hover:not(.group) { background: var(--sap-row-hover); }
+.tree-item.active { background: var(--sap-row-sel); color: var(--sap-blue); font-weight: bold; }
+.tree-item.section-link { padding-left: 20px; }
+.tree-item.group { background: #e0dcc8; font-weight: bold; color: var(--sap-label); padding-left: 8px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; cursor: default;}
+.tree-icon { font-size: 12px; flex-shrink: 0; }
+
+/* ─── CONTENT AREA ─── */
+.content-area {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--sap-body-bg);
+  transition: background 0.3s ease;
+}
+
+/* ─── TABSTRIP ─── */
+.tabstrip {
+  display: flex; align-items: flex-end;
+  padding: 4px 8px 0; background: var(--sap-tab-inactive);
+  border-bottom: 2px solid var(--sap-header-blue);
+  flex-shrink: 0; gap: 2px;
+}
+.tab {
+  padding: 4px 14px; font-size: 11px;
+  border: 1px solid var(--sap-tab-border); border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  cursor: pointer; user-select: none;
+  background: var(--sap-tab-inactive); color: var(--sap-muted);
+  transition: background 0.15s;
+  position: relative; top: 2px;
+}
+.tab:hover { background: #e8e4d4; }
+.tab.active {
+  background: var(--sap-tab-active); color: var(--sap-blue);
+  font-weight: bold; border-bottom: 2px solid #fff;
+  z-index: 1; top: 2px;
+}
+
+/* ─── SCROLLABLE FORM BODY ─── */
+.form-body {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 10px 12px;
+}
+
+/* ─── GROUP BOX ─── */
+.group-box {
+  border: 1px solid var(--sap-group-border);
+  background: var(--sap-field-bg);
+  margin-bottom: 10px;
+  border-radius: 1px;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.35s, transform 0.35s, border-radius 0.3s, box-shadow 0.3s;
+}
+.group-box.visible { opacity: 1; transform: translateY(0); }
+
+.group-title {
+  background: var(--sap-group-bg);
+  border-bottom: 1px solid var(--sap-group-border);
+  padding: 3px 10px;
+  font-size: 11px; font-weight: bold; color: var(--sap-label);
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+}
+.group-title:hover { background: #dcd8c4; }
+.group-expand { font-size: 10px; color: var(--sap-muted); display: flex; align-items: center; gap: 6px; }
+.expand-icon { transition: transform 0.25s; display: inline-block; font-style: normal; }
+.group-box.collapsed .expand-icon { transform: rotate(-90deg); }
+
+.group-body {
+  padding: 8px 10px;
+  max-height: 2000px; overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s;
+}
+.group-box.collapsed .group-body { max-height: 0; padding-top: 0; padding-bottom: 0; }
+
+/* ─── FORM ROW ─── */
+.form-row {
+  display: grid; grid-template-columns: 180px 1fr;
+  align-items: start; margin-bottom: 5px; gap: 4px;
+}
+.form-label {
+  font-size: 11px; color: var(--sap-label);
+  padding-top: 3px; text-align: right; padding-right: 8px;
+  font-weight: bold; white-space: nowrap;
+}
+.form-value {
+  font-size: 11px; color: var(--sap-text);
+  background: #f8f8f0;
+  border: 1px solid var(--sap-field-border);
+  padding: 2px 5px; min-height: 20px;
+  line-height: 1.4; word-break: break-word;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.07);
+}
+.form-value.readonly { background: var(--sap-group-bg); color: var(--sap-muted); }
+.form-value.blue { color: var(--sap-blue); font-weight: bold; }
+.form-value.green { color: var(--sap-green); font-weight: bold; }
+
+/* ─── ALV GRID ─── */
+.alv-toolbar {
+  display: flex; align-items: center; gap: 2px;
+  padding: 3px 4px; background: #e8e4d4;
+  border-bottom: 1px solid var(--sap-tab-border);
+}
+.alv-btn {
+  height: 18px; padding: 0 5px; font-size: 10px;
+  border: 1px solid var(--sap-btn-border);
+  background: linear-gradient(to bottom, var(--sap-btn-from), var(--sap-btn-to));
+  cursor: default; color: var(--sap-btn-text); white-space: nowrap;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.7);
+  border-radius: 1px;
+}
+.alv-btn:hover { background: linear-gradient(to bottom, #fff, #ccc); }
+
+.alv-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.alv-table th {
+  background: linear-gradient(to bottom, #dcd8c8, #c8c4b4);
+  border: 1px solid #b0aca0;
+  padding: 3px 6px; text-align: left;
+  font-weight: bold; color: var(--sap-text);
+  white-space: nowrap; cursor: default;
+  font-size: 11px; letter-spacing: 0.02em;
+}
+.alv-table th:hover { background: linear-gradient(to bottom, #e8e4d4, #d8d4c4); }
+.alv-table td {
+  border: 1px solid #d0ccc0;
+  padding: 2px 6px; vertical-align: top;
+  color: var(--sap-text); line-height: 1.5;
+}
+.alv-table tr { cursor: default; }
+.alv-table tr:nth-child(even) td { background: var(--sap-row-alt); }
+.alv-table tr:hover td { background: var(--sap-row-hover); }
+.alv-table tr.selected td { background: var(--sap-row-sel); }
+
+.alv-icon { width: 14px; text-align: center; }
+.cell-blue { color: var(--sap-blue); font-weight: bold; }
+.cell-green { color: var(--sap-green); }
+.cell-period { color: var(--sap-muted); font-family: var(--font-mono); font-size: 10px; }
+
+/* SAP traffic lights */
+.traffic { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); }
+.traffic.green { background: #00aa00; box-shadow: 0 0 4px rgba(0,170,0,0.5); }
+.traffic.yellow { background: #ddaa00; }
+.traffic.red { background: #cc0000; }
+
+/* ─── SKILL MATRIX (like ALV with checkmarks) ─── */
+.skill-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.skill-block { border: 1px solid var(--sap-tab-border); background: #f8f8f4; }
+.skill-block-hdr {
+  background: linear-gradient(to bottom, #dcd8c8, #ccc8b8);
+  border-bottom: 1px solid var(--sap-tab-border);
+  padding: 3px 6px; font-size: 10px; font-weight: bold;
+  color: var(--sap-label); letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.skill-row {
+  display: flex; align-items: center; gap: 5px;
+  padding: 2px 6px; border-bottom: 1px solid #e8e4d8;
+  font-size: 10px; color: var(--sap-text);
+  transition: background 0.1s; cursor: default;
+}
+.skill-row:hover { background: var(--sap-row-hover); }
+.skill-row:last-child { border-bottom: none; }
+.skill-check { color: var(--sap-green); font-size: 11px; flex-shrink: 0; }
+
+/* ─── MODULE MAP ─── */
+.module-flow {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  padding: 6px 0;
+}
+.mod-box {
+  padding: 3px 10px; border: 1px solid;
+  font-size: 11px; font-weight: bold;
+  border-radius: 2px; cursor: default;
+  transition: box-shadow 0.15s;
+}
+.mod-box:hover { box-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+.mod-box.pp { background: #d4e8ff; border-color: #336699; color: #003399; }
+.mod-box.qm { background: #d4ffe8; border-color: #007755; color: #005533; }
+.mod-box.mm { background: #fff4d4; border-color: #886600; color: #664400; }
+.mod-box.sd { background: #ffd4e8; border-color: #882255; color: #660033; }
+.mod-box.wm { background: #e8d4ff; border-color: #553388; color: #331166; }
+.mod-box.fi { background: #ffecd4; border-color: #884422; color: #662200; }
+.mod-box.s4 { background: #dde8ff; border-color: #003399; color: #003399; font-size: 10px; }
+.mod-arrow { color: var(--sap-muted); font-size: 12px; padding: 0 1px; }
+
+/* ─── STATS STRIP ─── */
+.kpi-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  margin-bottom: 10px;
+}
+.kpi-box {
+  border: 1px solid var(--sap-tab-border);
+  background: linear-gradient(to bottom, #fff, #f0ece0);
+  text-align: center; padding: 8px 4px;
+  cursor: default; transition: background 0.15s;
+}
+.kpi-box:hover { background: linear-gradient(to bottom, #e8f0fc, #d8e8f8); }
+.kpi-num {
+  font-size: 22px; font-weight: bold; color: var(--sap-blue);
+  display: block; line-height: 1.1; font-family: var(--font-mono);
+}
+.kpi-lbl { font-size: 10px; color: var(--sap-muted); margin-top: 2px; display: block; letter-spacing: 0.04em; }
+
+/* ─── CONTACT FIELDS ─── */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 12px; }
+
+/* ─── STATUS BAR ─── */
+.status-bar {
+  display: flex; align-items: center;
+  height: 20px; background: var(--sap-status-bg);
+  border-top: 1px solid var(--sap-menu-border);
+  padding: 0 8px; gap: 8px; flex-shrink: 0;
+}
+.status-msg { font-size: 11px; color: var(--sap-status-text); flex: 1; font-weight: bold; }
+.status-info { font-size: 10px; color: var(--sap-muted); white-space: nowrap; }
+.status-sep { width: 1px; height: 12px; background: var(--sap-menu-border); }
+
+/* ─── FKEY BAR ─── */
+.fkey-bar {
+  display: flex; align-items: center;
+  height: 16px; background: #c8c4b4;
+  border-top: 1px solid #a0a090;
+  padding: 0 4px; gap: 0; flex-shrink: 0;
+  overflow: hidden;
+}
+.fkey {
+  display: flex; align-items: center; gap: 0;
+  font-size: 9px; padding: 0 4px; height: 100%;
+  border-right: 1px solid #a0a090; cursor: default;
+  transition: background 0.1s; white-space: nowrap; flex-shrink: 0;
+}
+.fkey:hover { background: rgba(255,255,255,0.3); }
+.fkey-num { color: var(--sap-blue); font-weight: bold; margin-right: 2px; }
+.fkey-name { color: #333; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 14px; }
+::-webkit-scrollbar-track { background: #d4d0c8; border: 1px solid #aca899; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to right, #c8c4b4, #a8a498);
+  border: 1px solid #888;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-button:single-button {
+  background: linear-gradient(to bottom, #e8e4d4, #c8c4b4);
+  display: block; height: 14px; border: 1px solid #888;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn { from{opacity:0}to{opacity:1} }
+.sap-window { animation: fadeIn 0.3s ease; }
+
+/* ─── LOADING INDICATOR ─── */
+.hourglass { display: none; font-size: 11px; color: var(--sap-blue); animation: hg 1s step-end infinite; }
+@keyframes hg { 0%,100%{content:'⧗'} 50%{content:'⧖'} }
+
+/* =========================================================================
+   FIORI LAUNCHPAD OVERRIDES (ACTIVATED VIA TOGGLE)
+   ========================================================================= */
+body.fiori-theme {
+  --sap-win-bg:       #eff4f9;
+  --sap-header-blue:  #354a5f;
+  --sap-body-bg:      #eff4f9;
+  --sap-field-bg:     #ffffff;
+  --sap-field-border: #89919a;
+  --sap-group-bg:     #ffffff;
+  --sap-group-border: transparent;
+  --sap-label:        #666666;
+  --sap-text:         #32363a;
+  --sap-blue:         #0a6ed1;
+  --font: '72', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --sap-tab-inactive: #ffffff;
+  --sap-tab-active:   #ffffff;
+}
+body.fiori-theme .sap-window { border: none; box-shadow: none; }
+body.fiori-theme .title-bar,
+body.fiori-theme .menu-bar,
+body.fiori-theme .toolbar,
+body.fiori-theme .status-bar,
+body.fiori-theme .fkey-bar { display: none; }
+
+body.fiori-theme .sap-header { height: 48px; background: var(--sap-header-blue); box-shadow: 0 1px 4px rgba(0,0,0,0.2); z-index: 10; }
+body.fiori-theme .nav-tree { background: #ffffff; border-right: 1px solid #d9d9d9; }
+body.fiori-theme .tree-header { background: #ffffff; color: #32363a; border-bottom: 1px solid #d9d9d9; font-size: 14px; padding: 16px 12px; }
+body.fiori-theme .tree-item { padding: 10px 12px; margin: 4px 8px; border-radius: 6px; border: none; font-size: 13px; }
+body.fiori-theme .tree-item.group { background: transparent; padding-top: 16px; }
+body.fiori-theme .tree-item:hover:not(.group) { background: #f5f5f5; }
+body.fiori-theme .tree-item.active { background: #e5f0fa; color: #0a6ed1; }
+
+body.fiori-theme .tabstrip { background: #ffffff; border-bottom: none; box-shadow: inset 0 -1px 0 #d9d9d9; padding: 0 16px; margin-bottom: 16px; }
+body.fiori-theme .tab { background: transparent; border: none; padding: 14px 16px; color: #666; font-size: 13px; margin-right: 8px; top: 0; }
+body.fiori-theme .tab:hover { background: transparent; color: #0a6ed1; }
+body.fiori-theme .tab.active { background: transparent; color: #0a6ed1; border-bottom: 3px solid #0a6ed1; z-index: 1; }
+
+body.fiori-theme .group-box { border-radius: 8px; box-shadow: 0 1px 4px 0 rgba(0,0,0,0.1), 0 2px 8px 0 rgba(0,0,0,0.05); border: none; margin-bottom: 16px; background: #ffffff; }
+body.fiori-theme .group-title { background: #ffffff; border-bottom: 1px solid #f2f2f2; font-size: 15px; padding: 14px 16px; color: #32363a; }
+body.fiori-theme .group-title:hover { background: #fafafa; }
+
+body.fiori-theme .form-value { background: transparent; border: none; box-shadow: none; font-size: 13px; color: #32363a; padding: 4px 0; }
+body.fiori-theme .form-label { font-size: 13px; color: #666; font-weight: normal; padding-top: 4px; }
+
+body.fiori-theme .kpi-box { background: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); padding: 16px 8px; }
+body.fiori-theme .kpi-box:hover { background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+body.fiori-theme .kpi-num { color: #354a5f; font-family: var(--font); }
+
+body.fiori-theme .alv-table th { background: #f4f4f4; border: none; border-bottom: 1px solid #e5e5e5; font-size: 12px; color: #666; padding: 10px; text-transform: uppercase; }
+body.fiori-theme .alv-table td { border: none; border-bottom: 1px solid #f2f2f2; padding: 10px; font-size: 13px; }
+body.fiori-theme .alv-table tr:hover td { background: #f5fafd; }
+body.fiori-theme .alv-table tr.selected td { background: #e5f0fa; }
+body.fiori-theme .alv-toolbar { background: #ffffff; border-bottom: 1px solid #e5e5e5; padding: 10px; }
+body.fiori-theme .alv-btn { border: 1px solid #0a6ed1; background: transparent; color: #0a6ed1; border-radius: 4px; padding: 6px 12px; box-shadow: none; }
+body.fiori-theme .alv-btn:hover { background: #e5f0fa; }
+
+body.fiori-theme .skill-block { background: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+body.fiori-theme .skill-block-hdr { background: #f4f4f4; border-bottom: 1px solid #e5e5e5; padding: 10px; color: #32363a; font-size: 12px; }
+body.fiori-theme .skill-row { border-bottom: 1px solid #f2f2f2; padding: 8px 10px; font-size: 13px; }
+
+body.fiori-theme ::-webkit-scrollbar-track { background: #eff4f9; border: none; }
+body.fiori-theme ::-webkit-scrollbar-thumb { background: #c2c2c2; border: 3px solid #eff4f9; border-radius: 8px; }
+
+@media(max-width:700px){
+  .nav-tree { display: none; }
+  .skill-grid { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: repeat(2,1fr); }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="sap-window">
+
+  <div class="title-bar">
+    <div class="title-bar-text">
+      <span class="title-icon">🖥</span>
+      SAP Easy Access – Employee Profile: HKS_PP_QM [Client 800 / EN]
+    </div>
+    <div class="title-btns">
+      <div class="title-btn">─</div>
+      <div class="title-btn">□</div>
+      <div class="title-btn" style="color:#c00">✕</div>
+    </div>
+  </div>
+
+  <div class="menu-bar">
+    <div class="menu-item">System</div>
+    <div class="menu-item">Edit</div>
+    <div class="menu-item">Favorites</div>
+    <div class="menu-item">Extras</div>
+    <div class="menu-item">Help</div>
+  </div>
+
+  <div class="toolbar">
+    <button class="tb-btn" title="Back">◀</button>
+    <button class="tb-btn" title="Exit">✕</button>
+    <button class="tb-btn" title="Cancel">⊘</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" title="Print">🖨</button>
+    <button class="tb-btn" title="Find">🔍</button>
+    <button class="tb-btn" title="Find Next">▼</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" title="First Page">⏮</button>
+    <button class="tb-btn" title="Previous Page">◀</button>
+    <button class="tb-btn" title="Next Page">▶</button>
+    <button class="tb-btn" title="Last Page">⏭</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" title="Save">💾</button>
+    <div class="tb-sep"></div>
+    <div class="tcode-wrap">
+      <span class="tcode-label">Transaction:</span>
+      <input class="tcode-field" value="ZHR_PROFILE" readonly>
+    </div>
+  </div>
+
+  <div class="sap-header">
+    <div class="sap-header-title">Employee Profile – SAP PP/QM Functional Consultant</div>
+    <div class="sap-header-right">
+      <span>Client: 800</span>
+      <span>User: HKUMAR_S</span>
+      <span class="sap-header-badge">CERTIFIED ASSOCIATE</span>
+      
+      <div class="theme-switch-wrapper" title="Toggle SAP Fiori Theme">
+        <label class="theme-switch" for="theme-checkbox">
+          <input type="checkbox" id="theme-checkbox">
+          <div class="slider">
+            <div class="slider-text"><span>GUI</span><span>FIORI</span></div>
+          </div>
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="sap-main">
+
+    <div class="nav-tree">
+      <div class="tree-header">📁 Easy Access Menu</div>
+      <div class="tree-item group">▶ Resume Sections</div>
+      <div class="tree-item active" onclick="navToSection('sec-profile', this)">
+        <span class="tree-icon">👤</span> Profile Overview
+      </div>
+      <div class="tree-item section-link" onclick="navToSection('sec-exp', this)">
+        <span class="tree-icon">💼</span> Work Experience
+      </div>
+      <div class="tree-item section-link" onclick="navToSection('sec-skills', this)">
+        <span class="tree-icon">⚙</span> Skills &amp; Expertise
+      </div>
+      <div class="tree-item section-link" onclick="navToSection('sec-modules', this)">
+        <span class="tree-icon">🔗</span> Module Integration
+      </div>
+      <div class="tree-item section-link" onclick="navToSection('sec-edu', this)">
+        <span class="tree-icon">🎓</span> Education
+      </div>
+      <div class="tree-item section-link" onclick="navToSection('sec-cert', this)">
+        <span class="tree-icon">🏅</span> Certification
+      </div>
+      <div class="tree-item section-link" onclick="navToSection('sec-tools', this)">
+        <span class="tree-icon">🛠</span> Tools &amp; Software
+      </div>
+      <div class="tree-item section-link" onclick="navToSection('sec-lang', this)">
+        <span class="tree-icon">🗣</span> Languages
+      </div>
+      <div class="tree-item section-link" onclick="navToSection('sec-extras', this)">
+        <span class="tree-icon">🌟</span> Activities
+      </div>
+      <div class="tree-item group" style="margin-top:8px">▶ Quick Info</div>
+      <div class="tree-item"><span class="tree-icon">📍</span> Bengaluru, India</div>
+      <div class="tree-item"><span class="tree-icon">📅</span> Exp: 4.5+ Years</div>
+      <div class="tree-item"><span class="tree-icon">🏭</span> Discrete Mfg</div>
+      <div class="tree-item"><span class="tree-icon">🚀</span> S/4HANA Ready</div>
+      <div class="tree-item"><span class="tree-icon">🤖</span> Gen AI Skilled</div>
+    </div>
+
+    <div class="content-area">
+
+      <div class="tabstrip">
+        <div class="tab active" onclick="navToSection('sec-profile', this)">Profile Overview</div>
+        <div class="tab" onclick="navToSection('sec-exp', this)">Experience Log</div>
+        <div class="tab" onclick="navToSection('sec-skills', this)">Skill Matrix</div>
+        <div class="tab" onclick="navToSection('sec-edu', this)">Qualifications</div>
+        <div class="tab" onclick="navToSection('sec-lang', this)">Languages</div>
+      </div>
+
+      <div class="form-body" id="form-body">
+
+        <div class="kpi-row" style="margin-bottom:10px">
+          <div class="kpi-box">
+            <span class="kpi-num" data-target="4.5">0+</span>
+            <span class="kpi-lbl">Years Experience</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-num" data-target="20">0+</span>
+            <span class="kpi-lbl">Plants Configured</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-num" data-target="20">0+</span>
+            <span class="kpi-lbl">RICEF Objects</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-num" data-target="15">0+</span>
+            <span class="kpi-lbl">Users Trained</span>
+          </div>
+        </div>
+
+        <div class="group-box visible" id="sec-profile">
+          <div class="group-title" onclick="toggleGroup(this)">
+            👤 &nbsp;Personal Data &amp; Contact Information
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body">
+            <div class="contact-grid">
+              <div>
+                <div class="form-row">
+                  <div class="form-label">Full Name:</div>
+                  <div class="form-value blue">Hemanth Kumar S</div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Designation:</div>
+                  <div class="form-value">SAP PP/QM Functional Consultant</div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Experience:</div>
+                  <div class="form-value green">4.5+ Years</div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Industries:</div>
+                  <div class="form-value">Semiconductor · Industrial Equipment</div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Status:</div>
+                  <div class="form-value"><span class="traffic green"></span> &nbsp;Available for Hire</div>
+                </div>
+              </div>
+              <div>
+                <div class="form-row">
+                  <div class="form-label">Mobile:</div>
+                  <div class="form-value"><a href="tel:+917815876703" style="color:var(--sap-blue)">+91 7815876703</a></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">E-Mail:</div>
+                  <div class="form-value"><a href="mailto:hemanthshivkumar@gmail.com" style="color:var(--sap-blue)">hemanthshivkumar@gmail.com</a></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">LinkedIn:</div>
+                  <div class="form-value"><a href="https://www.linkedin.com/in/hemanth-kumar-s-0993b2171/" target="_blank" style="color:var(--sap-blue)">hemanthshivakumar-0993b2171</a></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Location:</div>
+                  <div class="form-value">Bengaluru, Karnataka, India</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-box" id="sec-exp">
+          <div class="group-title" onclick="toggleGroup(this)">
+            💼 &nbsp;Work Experience – Employment History
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body" style="padding:0">
+            <div class="alv-toolbar">
+              <button class="alv-btn">Sort Ascending</button>
+              <button class="alv-btn">Sort Descending</button>
+              <button class="alv-btn">Filter</button>
+              <button class="alv-btn">Export</button>
+              <button class="alv-btn">Sum</button>
+            </div>
+            <table class="alv-table">
+              <thead>
+                <tr>
+                  <th class="alv-icon">▣</th>
+                  <th>Period</th>
+                  <th>Role</th>
+                  <th>Company</th>
+                  <th>Client</th>
+                  <th>Industry</th>
+                  <th>Project Type</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="selected" onclick="showExp('exp1', this)">
+                  <td>◉</td>
+                  <td class="cell-period">Jun 2024 – Now</td>
+                  <td class="cell-blue">SAP PP/MM Consultant</td>
+                  <td>Ernst &amp; Young GDS</td>
+                  <td>Nvidia Corp.</td>
+                  <td>Semiconductor</td>
+                  <td>ECC → S/4HANA</td>
+                  <td><span class="traffic green"></span></td>
+                </tr>
+                <tr onclick="showExp('exp2', this)">
+                  <td>○</td>
+                  <td class="cell-period">Oct 2021 – Jun 2024</td>
+                  <td class="cell-blue">SAP PP/QM Consultant</td>
+                  <td>Accenture Solutions</td>
+                  <td>KSB Pumps &amp; Valves</td>
+                  <td>Industrial Equip.</td>
+                  <td>Implementation + Support</td>
+                  <td><span class="traffic yellow"></span></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div id="exp1" style="padding:8px 10px;border-top:1px solid var(--sap-tab-border);background:#fafaf4;">
+              <div style="font-size:10px;font-weight:bold;color:var(--sap-label);margin-bottom:6px;letter-spacing:0.04em;">DETAIL VIEW — EY GDS / NVIDIA CORPORATION</div>
+              <div class="form-row"><div class="form-label">Role:</div><div class="form-value blue">SAP PP/MM Consultant</div></div>
+              <div class="form-row"><div class="form-label">Tasks:</div><div class="form-value">
+                ▸ Gathered business requirements; created 5 Business Process Design documents<br>
+                ▸ Configured 20 plants with all production planning parameters end-to-end<br>
+                ▸ Created FSDs for 20+ RICEF objects (Enhancements, Reports, Interfaces, Conversions, Forms)<br>
+                ▸ Functional unit testing for 20+ RICEF objects; ABAP team collaboration for issue resolution<br>
+                ▸ Reengineered 20+ programs using ABAP debugging to write accurate FSDs<br>
+                ▸ Prepared detailed SIT test plan; built Python + AI tools to automate repetitive tasks
+              </div></div>
+            </div>
+            <div id="exp2" style="padding:8px 10px;border-top:1px solid var(--sap-tab-border);background:#fafaf4;display:none;">
+              <div style="font-size:10px;font-weight:bold;color:var(--sap-label);margin-bottom:6px;letter-spacing:0.04em;">DETAIL VIEW — ACCENTURE / KSB PUMPS &amp; VALVES</div>
+              <div class="form-row"><div class="form-label">Role:</div><div class="form-value blue">SAP PP/QM Consultant</div></div>
+              <div class="form-row"><div class="form-label">Tasks:</div><div class="form-value">
+                ▸ Configured SAP PP/QM across multiple phases — discrete manufacturing planning through execution<br>
+                ▸ Managed end-to-end Master Data: Material Master, BOMs, Work Centers, Routings, MRP Areas, factory calendars<br>
+                ▸ Handled service requests, incidents &amp; change requests; maintained SLA adherence in live SAP environment<br>
+                ▸ Prepared functional specs, user documentation &amp; SAP queries; implemented enhancements with developers<br>
+                ▸ Conducted user training for 15+ users; monitored support ticket queues and coordinated team
+              </div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-box" id="sec-modules">
+          <div class="group-title" onclick="toggleGroup(this)">
+            🔗 &nbsp;SAP Module Integration Expertise
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body">
+            <div class="module-flow">
+              <div class="mod-box pp">SAP PP</div>
+              <span class="mod-arrow">⇌</span>
+              <div class="mod-box qm">SAP QM</div>
+              <span class="mod-arrow">⇌</span>
+              <div class="mod-box mm">SAP MM</div>
+              <span class="mod-arrow">⇌</span>
+              <div class="mod-box sd">SAP SD</div>
+              <span class="mod-arrow">⇌</span>
+              <div class="mod-box wm">WM / EWM</div>
+              <span class="mod-arrow">⇌</span>
+              <div class="mod-box fi">FI / CO</div>
+              <span class="mod-arrow">⇌</span>
+              <div class="mod-box s4">S/4HANA SCM</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-box" id="sec-skills">
+          <div class="group-title" onclick="toggleGroup(this)">
+            ⚙ &nbsp;Skill Matrix – SAP PP/QM &amp; Technical Competencies
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body">
+            <div class="skill-grid">
+              <div class="skill-block">
+                <div class="skill-block-hdr">PP Master Data</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Bill of Materials</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Work Centers / Resources</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Routings / Recipe</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Production Versions</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Inspection Plans</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Master Inspection Chars</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Catalogues &amp; Code Groups</div>
+              </div>
+              <div class="skill-block">
+                <div class="skill-block-hdr">MRP &amp; Execution</div>
+                <div class="skill-row"><span class="skill-check">✔</span> MRP Types &amp; Configuration</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Demand Management</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Planning Strategies</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Order Confirmation</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Goods Issue / Receipt</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Back Flushing</div>
+                <div class="skill-row"><span class="skill-check">✔</span> STO &amp; Subcontracting</div>
+              </div>
+              <div class="skill-block">
+                <div class="skill-block-hdr">Technical &amp; AI</div>
+                <div class="skill-row"><span class="skill-check">✔</span> ABAP Debugging</div>
+                <div class="skill-row"><span class="skill-check">✔</span> FSD Authoring (RICEF)</div>
+                <div class="skill-row"><span class="skill-check">✔</span> SIT Test Planning</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Python Automation</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Generative AI Tools</div>
+                <div class="skill-row"><span class="skill-check">✔</span> SAP Activate Method.</div>
+                <div class="skill-row"><span class="skill-check">✔</span> Sales Order &amp; Delivery</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-box" id="sec-edu">
+          <div class="group-title" onclick="toggleGroup(this)">
+            🎓 &nbsp;Education / Qualifications
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body" style="padding:0">
+            <table class="alv-table">
+              <thead>
+                <tr>
+                  <th>Period</th>
+                  <th>Degree / Qualification</th>
+                  <th>Institution</th>
+                  <th>Board / University</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-period">2017 – 2021</td>
+                  <td class="cell-blue">B.E. Electrical &amp; Electronics Eng.</td>
+                  <td>Dr. Ambedkar Institute of Technology, Bengaluru</td>
+                  <td>Visvesvaraya Technological University</td>
+                  <td class="cell-green">8.51 CGPA (77.5%)</td>
+                </tr>
+                <tr>
+                  <td class="cell-period">2015 – 2017</td>
+                  <td class="cell-blue">Pre-University (10+2)</td>
+                  <td>Sarvodaya PU College, Tumkur</td>
+                  <td>Karnataka State Board</td>
+                  <td class="cell-green">88.5%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="group-box" id="sec-cert">
+          <div class="group-title" onclick="toggleGroup(this)">
+            🏅 &nbsp;SAP Certification
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body">
+            <div class="form-row">
+              <div class="form-label">Certificate:</div>
+              <div class="form-value blue">SAP Certified Associate</div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">Track:</div>
+              <div class="form-value">SAP S/4HANA Cloud Private Edition – Production Planning &amp; Manufacturing</div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">Issued By:</div>
+              <div class="form-value">SAP SE</div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">Validity:</div>
+              <div class="form-value green"><span class="traffic green"></span> &nbsp;Active</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-box" id="sec-tools">
+          <div class="group-title" onclick="toggleGroup(this)">
+            🛠 &nbsp;Tools, Software
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body" style="padding:0">
+            <table class="alv-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Tool / Platform</th>
+                  <th>Proficiency</th>
+                  <th>Usage Context</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Ticketing</td><td class="cell-blue">Jira</td><td><span class="traffic green"></span> Expert</td><td>Project &amp; issue tracking</td></tr>
+                <tr><td>Ticketing</td><td class="cell-blue">Assyst</td><td><span class="traffic green"></span> Expert</td><td>IT service management</td></tr>
+                <tr><td>Office</td><td class="cell-blue">MS Excel</td><td><span class="traffic green"></span> Advanced</td><td>Data analysis, test scripts</td></tr>
+                <tr><td>Office</td><td class="cell-blue">MS Word</td><td><span class="traffic green"></span> Advanced</td><td>FSD / documentation</td></tr>
+                <tr><td>Office</td><td class="cell-blue">MS PowerPoint</td><td><span class="traffic green"></span> Advanced</td><td>Presentations, training</td></tr>
+                <tr><td>Programming</td><td class="cell-blue">Python</td><td><span class="traffic green"></span> Proficient</td><td>Automation tooling</td></tr>
+                <tr><td>AI</td><td class="cell-blue">Generative AI</td><td><span class="traffic green"></span> Proficient</td><td>Day-to-day productivity</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="group-box" id="sec-lang">
+          <div class="group-title" onclick="toggleGroup(this)">
+            🗣 &nbsp;Languages
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body" style="padding:0">
+            <table class="alv-table">
+              <thead>
+                <tr>
+                  <th>Language</th>
+                  <th>Proficiency</th>
+                  <th>Usage Context</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="cell-blue">English</td><td><span class="traffic green"></span> Fluent</td><td>Business &amp; technical</td></tr>
+                <tr><td class="cell-blue">Kannada</td><td><span class="traffic green"></span> Native</td><td>—</td></tr>
+                <tr><td class="cell-blue">Hindi</td><td><span class="traffic yellow"></span> Conversational</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="group-box" id="sec-extras">
+          <div class="group-title" onclick="toggleGroup(this)">
+            🌟 &nbsp;Extra-Curricular Activities
+            <div class="group-expand"><span class="expand-icon">▼</span></div>
+          </div>
+          <div class="group-body" style="padding:0">
+            <table class="alv-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Activity</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>E-01</td><td>Led a team to create a Project Artifacts Library for reusable SAP documentation</td><td>Leadership</td></tr>
+                <tr><td>E-02</td><td>Member of cultural team for the SAP practice group</td><td>Culture</td></tr>
+                <tr><td>E-03</td><td>Part of Resource Planning, Demand &amp; Supply management team</td><td>Operations</td></tr>
+                <tr><td>E-04</td><td>Created Demo Repository of standard Manufacturing Processes for onboarding</td><td>Knowledge Mgmt</td></tr>
+                <tr><td>E-05</td><td>Developed multiple Python + Gen AI tools to eliminate repetitive manual tasks</td><td>Innovation / AI</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div></div></div><div class="status-bar">
+    <span class="status-msg" id="status-msg">✔ Record HKS_PP_QM read successfully (T-Code: ZHR_PROFILE)</span>
+    <div class="status-sep"></div>
+    <span class="status-info" id="status-clock">--:--:-- IST</span>
+    <div class="status-sep"></div>
+    <span class="status-info">Ins</span>
+    <div class="status-sep"></div>
+    <span class="status-info">Client 800</span>
+  </div>
+
+  <div class="fkey-bar">
+    <div class="fkey"><span class="fkey-num">F1</span><span class="fkey-name">Help</span></div>
+    <div class="fkey"><span class="fkey-num">F2</span><span class="fkey-name">Display</span></div>
+    <div class="fkey"><span class="fkey-num">F3</span><span class="fkey-name">Back</span></div>
+    <div class="fkey"><span class="fkey-num">F4</span><span class="fkey-name">Possible Entries</span></div>
+    <div class="fkey"><span class="fkey-num">F5</span><span class="fkey-name">Create</span></div>
+    <div class="fkey"><span class="fkey-num">F6</span><span class="fkey-name">Change</span></div>
+    <div class="fkey"><span class="fkey-num">F7</span><span class="fkey-name">Prev Page</span></div>
+    <div class="fkey"><span class="fkey-num">F8</span><span class="fkey-name">Execute</span></div>
+    <div class="fkey"><span class="fkey-num">F12</span><span class="fkey-name">Cancel</span></div>
+    <div class="fkey"><span class="fkey-num">Ctrl+S</span><span class="fkey-name">Save</span></div>
+    <div class="fkey"><span class="fkey-num">Ctrl+P</span><span class="fkey-name">Print</span></div>
+  </div>
+
+</div><script>
+// Theme Toggle Event Listener
+document.getElementById('theme-checkbox').addEventListener('change', function(e) {
+  if (e.target.checked) {
+    document.body.classList.add('fiori-theme');
+    setStatus('✔ Fiori Launchpad theme activated');
+  } else {
+    document.body.classList.remove('fiori-theme');
+    setStatus('✔ Classic SAP GUI theme activated');
+  }
+});
+
+// Clock
+function tick() {
+  document.getElementById('status-clock').textContent =
+    new Date().toTimeString().slice(0,8) + ' IST';
+}
+tick(); setInterval(tick, 1000);
+
+// Group box expand/collapse
+function toggleGroup(titleEl) {
+  const box = titleEl.closest('.group-box');
+  box.classList.toggle('collapsed');
+}
+
+// Navigation for both Tabs and Tree Links
+function navToSection(id, element) {
+  // Scroll
+  const target = document.getElementById(id);
+  if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  
+  // Highlight Tab or Tree Item appropriately
+  if (element.classList.contains('tree-item')) {
+    document.querySelectorAll('.tree-item').forEach(t => t.classList.remove('active'));
+    element.classList.add('active');
+  }
+  
+  if (element.classList.contains('tab')) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    element.classList.add('active');
+    setStatus('✔ Tab selected: ' + element.textContent.trim());
+  }
+}
+
+// Experience row detail toggle
+function showExp(id, rowElement) {
+  const allRows = rowElement.closest('tbody').querySelectorAll('tr');
+  allRows.forEach(r => {
+    r.querySelector('td:first-child').textContent = '○';
+    r.classList.remove('selected');
+  });
+  rowElement.querySelector('td:first-child').textContent = '◉';
+  rowElement.classList.add('selected');
+  
+  document.getElementById('exp1').style.display = (id === 'exp1') ? 'block' : 'none';
+  document.getElementById('exp2').style.display = (id === 'exp2') ? 'block' : 'none';
+  
+  setStatus(id === 'exp1'
+    ? '✔ Record: EY GDS / Nvidia Corporation – Jun 2024 to Present'
+    : '✔ Record: Accenture / KSB Pumps & Valves – Oct 2021 to Jun 2024'
+  );
+}
+
+// Status bar
+function setStatus(msg) {
+  document.getElementById('status-msg').textContent = msg;
+}
+
+// Scroll reveal for group boxes
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.05, root: document.getElementById('form-body') });
+document.querySelectorAll('.group-box').forEach(b => io.observe(b));
+
+// Counter animation
+function animCount(el, target) {
+  let s = null; const dur = 1200;
+  const step = ts => {
+    if (!s) s = ts;
+    const p = Math.min((ts-s)/dur, 1);
+    const ease = p < .5 ? 2*p*p : -1+(4-2*p)*p;
+    el.textContent = Math.floor(ease * target) + '+';
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target + '+';
+  };
+  requestAnimationFrame(step);
+}
+// trigger on load
+setTimeout(() => {
+  document.querySelectorAll('[data-target]').forEach(el => animCount(el, +el.dataset.target));
+}, 400);
+
+// Hover status messages
+document.querySelectorAll('.tb-btn').forEach(btn => {
+  btn.addEventListener('mouseenter', () => setStatus('ℹ ' + (btn.title || 'Toolbar button')));
+  btn.addEventListener('mouseleave', () => setStatus('✔ Record HKS_PP_QM read successfully (T-Code: ZHR_PROFILE)'));
+});
+
+document.querySelectorAll('.menu-item').forEach(m => {
+  m.addEventListener('mouseenter', () => setStatus('ℹ Menu: ' + m.textContent));
+  m.addEventListener('mouseleave', () => setStatus('✔ Record HKS_PP_QM read successfully (T-Code: ZHR_PROFILE)'));
+});
+</script>
+</body>
+</html>
